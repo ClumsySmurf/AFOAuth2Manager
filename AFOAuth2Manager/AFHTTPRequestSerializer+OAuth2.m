@@ -27,7 +27,7 @@
 
 - (void)setAuthorizationHeaderFieldWithCredential:(AFOAuthCredential *)credential {
     if ([credential.tokenType compare:@"Bearer" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-        [self setValue:[NSString stringWithFormat:@"Bearer %@", credential.accessToken] forHTTPHeaderField:@"Authorization"];
+        [self setDefaultHeader:@"Authorization" value:[NSString stringWithFormat:@"Bearer %@", credential.accessToken]];
     }
 }
 

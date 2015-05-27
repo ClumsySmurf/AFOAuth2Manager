@@ -126,7 +126,7 @@ static NSError * AFErrorFromRFC6749Section5_2Error(id object) {
     if (self.useHTTPBasicAuthentication) {
         [self setAuthorizationHeaderWithUsername:self.clientID password:self.secret];
     } else {
-        [self setDefaultHeader:nil value:@"Authorization"];
+        [self setDefaultHeader:@"Authorization" value:nil];
     }
 }
 

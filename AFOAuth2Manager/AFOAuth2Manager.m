@@ -112,8 +112,8 @@ static NSError * AFErrorFromRFC6749Section5_2Error(id object) {
     self.secret = secret;
 
     self.useHTTPBasicAuthentication = YES;
+    [self setDefaultHeader:@"Accept" value:@"application/json"];
 
-    [self.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     
     return self;
 }

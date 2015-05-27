@@ -20,11 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFURLRequestSerialization.h"
+#import "AFHTTPClient.h"
 
 @class AFOAuthCredential;
 
-@interface AFHTTPRequestSerializer (OAuth2)
+@interface AFHTTPClient (OAuth2)
 
 /**
  Sets the "Authorization" HTTP header set in request objects made by the HTTP client to contain the access token within the OAuth credential. This overwrites any existing value for this header.

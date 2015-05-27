@@ -126,7 +126,7 @@ static NSError * AFErrorFromRFC6749Section5_2Error(id object) {
     if (self.useHTTPBasicAuthentication) {
         [self setAuthorizationHeaderWithUsername:self.clientID password:self.secret];
     } else {
-        [self setValue:nil forHTTPHeaderField:@"Authorization"];
+        [self setDefaultHeader:nil value:@"Authorization"];
     }
 }
 
@@ -220,57 +220,65 @@ static NSError * AFErrorFromRFC6749Section5_2Error(id object) {
         mutableParameters[@"client_secret"] = self.secret;
     }
     parameters = [NSDictionary dictionaryWithDictionary:mutableParameters];
-
-    AFHTTPRequestOperation *requestOperation = [self POST:URLString parameters:parameters success:^(__unused AFHTTPRequestOperation *operation, id responseObject) {
+    
+    NSURLRequest *request = [self requestWithMethod:@"POST" path:URLString parameters:parameters];
+    
+    void (^failureBlock)(AFHTTPRequestOperation *operation, NSError *error) = ^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (failure) {
+            failure(error);
+        }
+    };
+    
+    void (^successBlock)(AFHTTPRequestOperation *operation, id responseObject) = ^(AFHTTPRequestOperation *operation, id responseObject) {
         if (!responseObject) {
             if (failure) {
                 failure(nil);
             }
-
+            
             return;
         }
-
+        
         if ([responseObject valueForKey:@"error"]) {
             if (failure) {
                 failure(AFErrorFromRFC6749Section5_2Error(responseObject));
             }
-
+            
             return;
         }
-
+        
         NSString *refreshToken = [responseObject valueForKey:@"refresh_token"];
         if (!refreshToken || [refreshToken isEqual:[NSNull null]]) {
             refreshToken = [parameters valueForKey:@"refresh_token"];
         }
-
+        
         AFOAuthCredential *credential = [AFOAuthCredential credentialWithOAuthToken:[responseObject valueForKey:@"access_token"] tokenType:[responseObject valueForKey:@"token_type"]];
-
-
+        
+        
         if (refreshToken) { // refreshToken is optional in the OAuth2 spec
             [credential setRefreshToken:refreshToken];
         }
-
+        
         // Expiration is optional, but recommended in the OAuth2 spec. It not provide, assume distantFuture === never expires
         NSDate *expireDate = [NSDate distantFuture];
         id expiresIn = [responseObject valueForKey:@"expires_in"];
         if (expiresIn && ![expiresIn isEqual:[NSNull null]]) {
             expireDate = [NSDate dateWithTimeIntervalSinceNow:[expiresIn doubleValue]];
         }
-
+        
         if (expireDate) {
             [credential setExpiration:expireDate];
         }
-
+        
         if (success) {
             success(credential);
         }
-    } failure:^(__unused AFHTTPRequestOperation *operation, NSError *error) {
-        if (failure) {
-            failure(error);
-        }
-    }];
+    };
     
-    return requestOperation;
+    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:successBlock failure:failureBlock];
+    [self enqueueHTTPRequestOperation:operation];
+    
+    return operation;
+
 }
 
 @end

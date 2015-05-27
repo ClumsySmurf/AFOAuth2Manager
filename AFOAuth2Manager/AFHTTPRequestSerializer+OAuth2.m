@@ -23,7 +23,7 @@
 #import "AFHTTPRequestSerializer+OAuth2.h"
 #import "AFOAuth2Manager.h"
 
-@implementation AFHTTPRequestSerializer (OAuth2)
+@implementation AFHTTPClient (OAuth2)
 
 - (void)setAuthorizationHeaderFieldWithCredential:(AFOAuthCredential *)credential {
     if ([credential.tokenType compare:@"Bearer" options:NSCaseInsensitiveSearch] == NSOrderedSame) {

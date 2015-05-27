@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '6.0'
   s.osx.deployment_target = '10.8'
 
-  s.dependency 'AFNetworking/NSURLConnection', '~>1.0'
+  s.dependency 'AFNetworking/NSURLConnection', '~>1.3.4'
 
   s.ios.frameworks = 'Security'
 end

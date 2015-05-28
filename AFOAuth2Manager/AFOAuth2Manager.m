@@ -279,8 +279,6 @@ static NSError * AFErrorFromRFC6749Section5_2Error(id object) {
     [self enqueueHTTPRequestOperation:operation];
     
     
-    operation.responseSerializer = [AFJSONResponseSerializer serializer];
-    
     return operation;
     
 }

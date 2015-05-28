@@ -229,7 +229,7 @@ static NSError * AFErrorFromRFC6749Section5_2Error(id object) {
         }
     };
     
-    void (^successBlock)(AFHTTPRequestOperation *operation, NSDictionary* responseObject) = ^(AFHTTPRequestOperation *operation, id responseObject) {
+    void (^successBlock)(AFHTTPRequestOperation *operation, NSDictionary* responseObject) = ^(AFHTTPRequestOperation *operation, NSDictionary* responseObject) {
         if (!responseObject) {
             if (failure) {
                 failure(nil);
